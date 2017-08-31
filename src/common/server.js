@@ -10,10 +10,9 @@ require('./global.js');
 let pkg = PKG;
 let restify = require('restify');
 let CookieParser = require('restify-cookies');
-const redis = require('redis')
-const redisClient = redis.createClient();
 let reqLog = require('debug')(pkg.name + ':server');
 reqLog.log = console.log.bind(console);
+let bunyan = require('bunyan');
 let router = require('../routers');
 restify.CORS.matchOrigin = function () {
 	return true;
@@ -83,15 +82,9 @@ server.use(run(function* getUserInfo(req, res, next) {
 		return;
 	}
 	console.log(models.token.get);
-	const userId = redisClient.get(`token${req.token}123`, function (err, reply) {
-		console.log('--------', reply.toString()); // Will print `OK`
-	});
-	console.log('-----', userId);
-
 	let tokenInfo = yield models.token.get({token: req.token}, {throwError: false});
 	if(tokenInfo){
 		req.userId = tokenInfo.userId;
-		redisClient.set(`token${req.token}`, tokenInfo.userId);
 		next();
 	} else {
 		throw new Exception(10004);
@@ -123,8 +116,8 @@ server.on('uncaughtException', function (request, response, route, error) {
 	console.error(request.url, error.stack || error);
 	response.send(err);
 });
-server.listen(10000);
-console.log('localhost:10000')
+server.listen(10086);
+console.log('localhost:10086')
 module.exports = server;
 
 

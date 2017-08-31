@@ -5,6 +5,7 @@ global.thunkify = require('thunkify-wrap');
 global.co = require('co');
 global._ = require('lodash');
 global.assert = require('assert');
+global.mongoose = require('mongoose');
 global.Sequelize = require('sequelize');
 require('./func');
 global.PKG = require('../../package.json');
@@ -13,7 +14,9 @@ global.errorconstant = require('./errorconstant.js');
 global.run = require('./run.js');
 
 // 数据库
-global.db = new Sequelize('test', 'root', '123456');
+global.db = new Sequelize('test', 'root', '12345678');
+global.mongo = mongoose.connect('mongodb://127.0.0.1/test');
+
 // 全局错误
 global.errors = require('./errors');
 global.Exception = function (code, msg, detail) {

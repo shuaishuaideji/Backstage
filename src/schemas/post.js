@@ -11,7 +11,7 @@ let schema = db.define('Post', {
 		},
 		userId: {
 			type: 'varchar(40)',
-			field: 'userId',
+			field: 'UserId',
 		},
 		title: {
 			type: 'varchar(40)',

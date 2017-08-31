@@ -4,14 +4,12 @@
 
 var express = require('express');
 var Sequelize = require('sequelize');
-var routers = require('./src/routers')
-require('./src/common/global.js');
-
 /**
  * Create app.
  */
 
 app = express();
+var sequelize = new Sequelize('test', 'root', '12345678');
 var bodyParser = require('body-parser');
 
 /**
@@ -31,10 +29,46 @@ var allowCrossDomain = function(req, res, next) {
 	next();
 };
 app.use(allowCrossDomain)
-routers(app);
+/**
+ * Main route
+ */
+var User = sequelize.define('User', {
+		id: {
+			primaryKey: true,
+			allowNull: false,
+			autoIncrement: true,
+			type: 'int(11)',
+			field: 'id'
+		},
+		account: {
+			type: 'varchar(20)',
+			field: 'account',
+		},
+		password: {
+			type: 'int(11)',
+			field: 'password'
+		},
+	}
+	, {
+		tableName: 'user',
+		createdAt: false,
+		updatedAt: false
+	});
 
+app.get('/', function (req, res, next) {
+    User.findOne({
+		account: 'fengwenhua',
+	}).then((re)=>{res.json(re)})
+	// res.render('login');
+});
+app.post('/sign', function (req, res, next) {
+	User.create({
+		account: req.body.account,
+		password: req.body.password,
+	})
+});
 
-app.listen(10000, function () {
-	console.log(' - listening on http://localhost:10000');
+app.listen(10086, function () {
+	console.log(' - listening on http://localhost:10086');
 });
 
